@@ -1,0 +1,12 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -m \"not live\""
+markers = ["live: llama al servicio real de datos.gov.co (RUN_LIVE_TESTS=1)"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]  # Depends() en argumentos es el patrón estándar de FastAPI

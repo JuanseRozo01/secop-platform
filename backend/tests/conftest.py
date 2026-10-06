@@ -1,11 +1,22 @@
-import pytest
+import os
+from collections.abc import Iterator
 
-from fastapi.testclient import TestClient
+# Debe ir antes de importar la app.
+os.environ["ENVIRONMENT"] = "testing"
+os.environ["SECRET_KEY"] = "test-secret-key-with-more-than-32-characters!!"
 
-from app.main import app
+import pytest  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+from app.main import app  # noqa: E402
 
 
 @pytest.fixture
-def client() -> TestClient:
+def anyio_backend() -> str:
+    return "asyncio"
+
+
+@pytest.fixture
+def client() -> Iterator[TestClient]:
     with TestClient(app) as test_client:
         yield test_client

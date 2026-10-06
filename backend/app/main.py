@@ -1,17 +1,20 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
-from app.core.loggings import setup_logging
+from app.core.logging import setup_logging
+from app.modules.secop.deps import close_secop_service
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     setup_logging()
     yield
+    await close_secop_service()
 
 
 app = FastAPI(
@@ -20,7 +23,19 @@ app = FastAPI(
     version=settings.APP_VERSION,
     debug=settings.DEBUG,
     lifespan=lifespan,
+    docs_url="/docs" if settings.docs_enabled else None,
+    redoc_url="/redoc" if settings.docs_enabled else None,
+    openapi_url="/openapi.json" if settings.docs_enabled else None,
 )
+
+if settings.CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 register_exception_handlers(app)
 app.include_router(api_router, prefix=settings.API_PREFIX)

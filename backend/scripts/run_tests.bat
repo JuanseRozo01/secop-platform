@@ -1,2 +1,2 @@
 @echo off
-pytest -q
+pytest -q
