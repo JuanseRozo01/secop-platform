@@ -12,6 +12,11 @@ from app.main import app  # noqa: E402
 
 
 @pytest.fixture
+def anyio_backend() -> str:
+    return "asyncio"
+
+
+@pytest.fixture
 def client() -> Iterator[TestClient]:
     with TestClient(app) as test_client:
         yield test_client

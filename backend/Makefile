@@ -1,4 +1,4 @@
-.PHONY: install dev test lint check
+.PHONY: install dev test test-live lint check
 
 install:
 	pip install -r requirements-dev.txt
@@ -8,6 +8,9 @@ dev:
 
 test:
 	pytest
+
+test-live:
+	RUN_LIVE_TESTS=1 pytest -m live -s
 
 lint:
 	ruff check .

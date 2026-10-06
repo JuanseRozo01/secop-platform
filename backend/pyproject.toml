@@ -1,10 +1,10 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
-addopts = "-q"
+addopts = "-q -m \"not live\""
+markers = ["live: llama al servicio real de datos.gov.co (RUN_LIVE_TESTS=1)"]
 
 [tool.ruff]
-line-length = 88
+line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]

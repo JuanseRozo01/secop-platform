@@ -37,6 +37,14 @@ class Settings(BaseSettings):
 
     SECOP_API_BASE_URL: str = "https://www.datos.gov.co/resource"
     SECOP_API_TIMEOUT: int = 30
+    # Token de aplicación de Socrata (opcional, evita throttling agresivo).
+    SECOP_APP_TOKEN: str = ""
+    # SECOP II - Procesos de Contratación (datos.gov.co)
+    SECOP_PROCESOS_DATASET: str = "p6dx-8zbt"
+    SECOP_MAX_RETRIES: int = 3
+    SECOP_CACHE_TTL_SECONDS: int = 300
+    # None => se exige autenticación solo en producción.
+    SECOP_REQUIRE_AUTH: bool | None = None
 
     AI_PROVIDER: str = "none"
     AI_API_KEY: str = ""
@@ -51,6 +59,12 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.ENVIRONMENT == "production"
+
+    @property
+    def secop_auth_required(self) -> bool:
+        if self.SECOP_REQUIRE_AUTH is None:
+            return self.is_production
+        return self.SECOP_REQUIRE_AUTH
 
     @property
     def docs_enabled(self) -> bool:
